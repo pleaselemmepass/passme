@@ -1,139 +1,112 @@
-﻿#include <iostream>
+#include <iostream>
 using namespace std;
-
 class CircularQueue
 {
-    int pizza[100];
-    int front, rear, m;
-
+    int arr[10], front = -1, rear = -1;
 public:
-    CircularQueue();
-    void create();
-    void enqueue();
-    void dequeue();
-    void display();
+    int isempty()
+    {
+        if (front == -1 && rear == -1)
+            return 1;
+        else
+            return 0;
+    }
+    int isfull()
+    {
+        if ((rear + 1) % 10 == front)
+            return 1;
+        else
+            return 0;
+    }
+    void enqueue(int x)
+    {
+        if (isfull() == 1)
+        {
+            cout << "Order queue is full." << endl;
+            return;
+        }
+        if (isempty() == 1)
+        {
+            front = rear = 0;
+            arr[rear] = x;
+        }
+        else
+        {
+            rear = (rear + 1) % 10;
+            arr[rear] = x;
+        }
+        cout << "Order accepted: " << x << endl;
+        display();
+    }
+    void dequeue()
+    {
+        if (isempty() == 1)
+        {
+            cout << "No pending orders." << endl;
+            return;
+        }
+        cout << "Order served: " << arr[front] << endl;
+        if (front == rear)
+        {
+            front = rear = -1;
+        }
+        else
+        {
+            front = (front + 1) % 10;
+        }
+        display();
+    }
+    void display()
+    {
+        if (isempty() == 1)
+        {
+            cout << "No orders in queue." << endl;
+            return;
+        }
+        cout << "Orders in queue: ";
+        int i = front;
+        while (1)
+        {
+            cout << arr[i] << " ";
+            if (i == rear)
+                break;
+            i = (i + 1) % 10;
+        }
+        cout << endl;
+    }
 };
-
-CircularQueue::CircularQueue()
-{
-    front = -1;
-    rear = -1;
-}
-
-void CircularQueue::create()
-{
-    do
-    {
-        cout << "Enter maximum number of orders (1-100): ";
-        cin >> m;
-    } while (m < 1 || m > 100);
-}
-
-void CircularQueue::enqueue()
-{
-    int order;
-
-    if ((rear + 1) % m == front)
-    {
-        cout << "Queue is Full." << endl;
-        return;
-    }
-
-    cout << "Enter Pizza Order ID: ";
-    cin >> order;
-
-    if (front == -1)
-        front = 0;
-
-    rear = (rear + 1) % m;
-    pizza[rear] = order;
-
-    cout << "Order Added Successfully." << endl;
-}
-
-void CircularQueue::dequeue()
-{
-    if (front == -1)
-    {
-        cout << "Queue is Empty." << endl;
-        return;
-    }
-
-    cout << "Completed Order: " << pizza[front] << endl;
-
-    if (front == rear)
-    {
-        front = -1;
-        rear = -1;
-    }
-    else
-        front = (front + 1) % m;
-}
-
-void CircularQueue::display()
-{
-    if (front == -1)
-    {
-        cout << "Queue is Empty." << endl;
-        return;
-    }
-
-    cout << "Pizza Orders: ";
-
-    int i = front;
-
-    while (true)
-    {
-        cout << pizza[i] << " ";
-
-        if (i == rear)
-            break;
-
-        i = (i + 1) % m;
-    }
-
-    cout << endl;
-}
-
 int main()
 {
     CircularQueue q;
-    int choice;
-
-    q.create();
-
+    int choice, order;
     do
     {
-        cout << "\n1. Add Pizza Order";
-        cout << "\n2. Complete Pizza Order";
-        cout << "\n3. Display Orders";
-        cout << "\n4. Exit";
-        cout << "\nEnter your choice: ";
+        cout << "\n--- Pizza Parlor ---" << endl;
+        cout << "1. Place an order" << endl;
+        cout << "2. Serve an order" << endl;
+        cout << "3. Display orders" << endl;
+        cout << "4. Exit" << endl;
+        cout << "Enter your choice: ";
         cin >> choice;
-
         switch (choice)
         {
-        case 1:
-            q.enqueue();
-            break;
-
-        case 2:
-            q.dequeue();
-            break;
-
-        case 3:
-            q.display();
-            break;
-
-        case 4:
-            cout << "Exiting...";
-            break;
-
-        default:
-            cout << "Invalid Choice.";
+            case 1:
+                cout << "Enter order number: ";
+                cin >> order;
+                q.enqueue(order);
+                break;
+            case 2:
+                q.dequeue();
+                break;
+            case 3:
+                q.display();
+                break;
+            case 4:
+                cout << "Exiting program." << endl;
+                break;
+            default:
+                cout << "Invalid choice." << endl;
         }
-
     } while (choice != 4);
-
     return 0;
 }
