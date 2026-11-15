@@ -1,115 +1,80 @@
-﻿#include <iostream>
+#include <iostream>
 using namespace std;
-
-class sort
+class Student
 {
-    float a[100], b[100];
+    float marks[50], temp;
     int n;
-
 public:
     void create();
-    void selection();
-    void bubble();
-    void topfive(float arr[]);
+    void display();
+    void selectionSort();
+    void bubbleSort();
+    void topFive();
 };
-
-void sort::create()
+void Student::create()
 {
-    cout << "Enter the number of students: ";
+    cout << "Enter number of students: ";
     cin >> n;
-
-    cout << "Enter the percentages of students: ";
-
+    cout << "Enter percentages: ";
     for (int i = 0; i < n; i++)
-    {
-        cin >> a[i];
-        b[i] = a[i];
-    }
+        cin >> marks[i];
 }
-
-void sort::selection()
+void Student::display()
 {
-    int min;
-    float temp;
-
-    cout << "\nSelection Sort:\n";
-
+    cout << "Percentages: ";
+    for (int i = 0; i < n; i++)
+        cout << marks[i] << " ";
+    cout << endl;
+}
+void Student::selectionSort()
+{
     for (int i = 0; i < n - 1; i++)
     {
-        min = i;
-
+        int small = i;
         for (int j = i + 1; j < n; j++)
         {
-            if (a[j] < a[min])
-                min = j;
+            if (marks[j] < marks[small])
+                small = j;
         }
-
-        temp = a[i];
-        a[i] = a[min];
-        a[min] = temp;
-
-        cout << "Pass " << i + 1 << ": ";
-
-        for (int k = 0; k < n; k++)
-            cout << a[k] << " ";
-
-        cout << endl;
+        temp = marks[i];
+        marks[i] = marks[small];
+        marks[small] = temp;
     }
-
-    topfive(a);
+    cout << "Selection Sort: ";
+    display();
 }
-
-void sort::bubble()
+void Student::bubbleSort()
 {
-    float temp;
-
-    cout << "\nBubble Sort:\n";
-
     for (int i = 0; i < n - 1; i++)
     {
         for (int j = 0; j < n - i - 1; j++)
         {
-            if (b[j] > b[j + 1])
+            if (marks[j] > marks[j + 1])
             {
-                temp = b[j];
-                b[j] = b[j + 1];
-                b[j + 1] = temp;
+                temp = marks[j];
+                marks[j] = marks[j + 1];
+                marks[j + 1] = temp;
             }
         }
-
-        cout << "Pass " << i + 1 << ": ";
-
-        for (int k = 0; k < n; k++)
-            cout << b[k] << " ";
-
-        cout << endl;
     }
-
-    topfive(b);
+    cout << "Bubble Sort: ";
+    display();
 }
-
-void sort::topfive(float arr[])
+void Student::topFive()
 {
-    cout << "Top five scores:\n";
-
-    int start = n - 5;
-
-    if (start < 0)
-        start = 0;
-
-    for (int i = n - 1; i >= start; i--)
-        cout << arr[i] << " ";
-
+    cout << "Top five scores: ";
+    for (int i = n - 1; i >= 0 && i >= n - 5; i--)
+        cout << marks[i] << " ";
     cout << endl;
 }
-
 int main()
 {
-    sort s;
-
+    Student s;
     s.create();
-    s.selection();
-    s.bubble();
-
+    cout << "\nOriginal ";
+    s.display();
+    s.selectionSort();
+    s.bubbleSort();
+    s.topFive();
     return 0;
 }
