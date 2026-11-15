@@ -1,317 +1,307 @@
-﻿#include <iostream>
-#include <string>
+#include <iostream>
 using namespace std;
-
 class Node
 {
 public:
     int prn;
     string name;
-    Node *next;
+    Node *link;
+    Node(int p, string n)
+    {
+        prn = p;
+        name = n;
+        link = NULL;
+    }
 };
-
-class Pinnacle
+class MemberList
 {
-    Node *head;
-
+    Node *start;
 public:
-    Pinnacle();
-
-    void addPresident();
-    void addSecretary();
-    void addMember();
-
-    void deletePresident();
-    void deleteSecretary();
-    void deleteMember();
-
-    void display();
-    void count();
-    void concatenate(Pinnacle &p);
+    MemberList()
+    {
+        start = NULL;
+    }
+    // 1. Add at beginning
+    void addFirst(int p, string n)
+    {
+        Node *newnode = new Node(p, n);
+        newnode->link = start;
+        start = newnode;
+        cout << "Member added." << endl;
+    }
+    // 2. Add at end
+    void addLast(int p, string n)
+    {
+        Node *newnode = new Node(p, n);
+        if (start == NULL)
+        {
+            start = newnode;
+        }
+        else
+        {
+            Node *temp = start;
+            while (temp->link != NULL)
+            {
+                temp = temp->link;
+            }
+            temp->link = newnode;
+        }
+        cout << "Member added." << endl;
+    }
+    // 3. Add after given PRN
+    void addAfter(int key, int p, string n)
+    {
+        Node *temp = start;
+        while (temp != NULL && temp->prn != key)
+        {
+            temp = temp->link;
+        }
+        if (temp == NULL)
+        {
+            cout << "PRN not found." << endl;
+            return;
+        }
+        Node *newnode = new Node(p, n);
+        newnode->link = temp->link;
+        temp->link = newnode;
+        cout << "Member added." << endl;
+    }
+    // 4. Delete first member
+    void removeFirst()
+    {
+        if (start == NULL)
+        {
+            cout << "List is empty." << endl;
+            return;
+        }
+        Node *temp = start;
+        start = start->link;
+        delete temp;
+        cout << "First member deleted." << endl;
+    }
+    // 5. Delete last member
+    void removeLast()
+    {
+        if (start == NULL)
+        {
+            cout << "List is empty." << endl;
+            return;
+        }
+        if (start->link == NULL)
+        {
+            delete start;
+            start = NULL;
+        }
+        else
+        {
+            Node *temp = start;
+            while (temp->link->link != NULL)
+            {
+                temp = temp->link;
+            }
+            delete temp->link;
+            temp->link = NULL;
+        }
+        cout << "Last member deleted." << endl;
+    }
+    // 6. Delete member using PRN
+    void removeMember(int key)
+    {
+        if (start == NULL)
+        {
+            cout << "List is empty." << endl;
+            return;
+        }
+        if (start->prn == key)
+        {
+            removeFirst();
+            return;
+        }
+        Node *temp = start;
+        while (temp->link != NULL && temp->link->prn != key)
+        {
+            temp = temp->link;
+        }
+        if (temp->link == NULL)
+        {
+            cout << "PRN not found." << endl;
+            return;
+        }
+        Node *del = temp->link;
+        temp->link = del->link;
+        delete del;
+        cout << "Member deleted." << endl;
+    }
+    // 7. Display members
+    void showMembers()
+    {
+        if (start == NULL)
+        {
+            cout << "List is empty." << endl;
+            return;
+        }
+        Node *temp = start;
+        cout << "\nPresident: " << start->name << endl;
+        while (temp->link != NULL)
+        {
+            temp = temp->link;
+        }
+        cout << "Secretary: " << temp->name << endl;
+        cout << "\nAll Members:" << endl;
+        temp = start;
+        while (temp != NULL)
+        {
+            cout << temp->prn << " " << temp->name << endl;
+            temp = temp->link;
+        }
+    }
+    // 8. Count members
+    int totalMembers()
+    {
+        int count = 0;
+        Node *temp = start;
+        while (temp != NULL)
+        {
+            count++;
+            temp = temp->link;
+        }
+        return count;
+    }
+    // 9. Join two lists
+    void joinLists(MemberList &other)
+    {
+        if (other.start == NULL)
+        {
+            cout << "Second list is empty." << endl;
+            return;
+        }
+        if (start == NULL)
+        {
+            start = other.start;
+        }
+        else
+        {
+            Node *temp = start;
+            while (temp->link != NULL)
+            {
+                temp = temp->link;
+            }
+            temp->link = other.start;
+        }
+        other.start = NULL;
+        cout << "Lists joined successfully." << endl;
+    }
 };
-
-Pinnacle::Pinnacle()
-{
-    head = NULL;
-}
-
-void Pinnacle::addPresident()
-{
-    Node *temp = new Node;
-
-    cout << "Enter PRN and Name: ";
-    cin >> temp->prn >> temp->name;
-
-    temp->next = head;
-    head = temp;
-}
-
-void Pinnacle::addSecretary()
-{
-    Node *temp = new Node;
-
-    cout << "Enter PRN and Name: ";
-    cin >> temp->prn >> temp->name;
-
-    temp->next = NULL;
-
-    if (head == NULL)
-        head = temp;
-    else
-    {
-        Node *p = head;
-
-        while (p->next != NULL)
-            p = p->next;
-
-        p->next = temp;
-    }
-}
-
-void Pinnacle::addMember()
-{
-    Node *temp = new Node;
-
-    cout << "Enter PRN and Name: ";
-    cin >> temp->prn >> temp->name;
-
-    if (head == NULL)
-    {
-        temp->next = NULL;
-        head = temp;
-    }
-    else
-    {
-        Node *p = head;
-
-        while (p->next != NULL && p->next->next != NULL)
-            p = p->next;
-
-        temp->next = p->next;
-        p->next = temp;
-    }
-}
-
-void Pinnacle::deletePresident()
-{
-    if (head == NULL)
-    {
-        cout << "List is Empty." << endl;
-        return;
-    }
-
-    Node *temp = head;
-    head = head->next;
-
-    delete temp;
-
-    cout << "President Deleted." << endl;
-}
-
-void Pinnacle::deleteSecretary()
-{
-    if (head == NULL)
-    {
-        cout << "List is Empty." << endl;
-        return;
-    }
-
-    if (head->next == NULL)
-    {
-        delete head;
-        head = NULL;
-        cout << "Secretary Deleted." << endl;
-        return;
-    }
-
-    Node *p = head;
-
-    while (p->next->next != NULL)
-        p = p->next;
-
-    delete p->next;
-    p->next = NULL;
-
-    cout << "Secretary Deleted." << endl;
-}
-
-void Pinnacle::deleteMember()
-{
-    int key;
-
-    if (head == NULL || head->next == NULL ||
-        head->next->next == NULL)
-    {
-        cout << "No ordinary members to delete." << endl;
-        return;
-    }
-
-    cout << "Enter PRN to delete: ";
-    cin >> key;
-
-    Node *p = head;
-
-    while (p->next != NULL &&
-           p->next->next != NULL &&
-           p->next->prn != key)
-        p = p->next;
-
-    if (p->next == NULL || p->next->next == NULL)
-    {
-        cout << "Member Not Found." << endl;
-        return;
-    }
-
-    Node *temp = p->next;
-    p->next = temp->next;
-
-    delete temp;
-
-    cout << "Member Deleted." << endl;
-}
-
-void Pinnacle::display()
-{
-    if (head == NULL)
-    {
-        cout << "List is Empty." << endl;
-        return;
-    }
-
-    Node *p = head;
-
-    cout << "\nPRN\tName\n";
-
-    while (p != NULL)
-    {
-        cout << p->prn << "\t" << p->name << endl;
-        p = p->next;
-    }
-}
-
-void Pinnacle::count()
-{
-    int c = 0;
-    Node *p = head;
-
-    while (p != NULL)
-    {
-        c++;
-        p = p->next;
-    }
-
-    cout << "Total Members: " << c << endl;
-}
-
-void Pinnacle::concatenate(Pinnacle &p)
-{
-    if (p.head == NULL)
-    {
-        cout << "Second List is Empty." << endl;
-        return;
-    }
-
-    if (head == NULL)
-    {
-        head = p.head;
-        p.head = NULL;
-        return;
-    }
-
-    Node *temp = head;
-
-    while (temp->next != NULL)
-        temp = temp->next;
-
-    temp->next = p.head;
-    p.head = NULL;
-}
-
 int main()
 {
-    Pinnacle divisionA, divisionB;
-    int choice, division;
-    Pinnacle *p;
-
+    MemberList first, second;
+    int choice, division, p, key;
+    string n;
     do
     {
-        cout << "\n1. Add President";
-        cout << "\n2. Add Secretary";
-        cout << "\n3. Add Member";
-        cout << "\n4. Delete President";
-        cout << "\n5. Delete Secretary";
-        cout << "\n6. Delete Member";
-        cout << "\n7. Display";
+        cout << "\n--- CLUB MEMBER LIST ---";
+        cout << "\n1. Add at Beginning";
+        cout << "\n2. Add at End";
+        cout << "\n3. Add After PRN";
+        cout << "\n4. Delete First";
+        cout << "\n5. Delete Last";
+        cout << "\n6. Delete by PRN";
+        cout << "\n7. Display Members";
         cout << "\n8. Count Members";
-        cout << "\n9. Concatenate Divisions";
+        cout << "\n9. Join Lists";
         cout << "\n10. Exit";
-        cout << "\nEnter your choice: ";
+        cout << "\nEnter choice: ";
         cin >> choice;
-
         if (choice >= 1 && choice <= 8)
         {
-            cout << "Select Division (1 or 2): ";
+            cout << "Enter division (1 or 2): ";
             cin >> division;
-
-            if (division == 1)
-                p = &divisionA;
-            else if (division == 2)
-                p = &divisionB;
-            else
-            {
-                cout << "Invalid Division.";
-                continue;
-            }
         }
-
         switch (choice)
         {
-        case 1:
-            p->addPresident();
-            break;
-
-        case 2:
-            p->addSecretary();
-            break;
-
-        case 3:
-            p->addMember();
-            break;
-
-        case 4:
-            p->deletePresident();
-            break;
-
-        case 5:
-            p->deleteSecretary();
-            break;
-
-        case 6:
-            p->deleteMember();
-            break;
-
-        case 7:
-            p->display();
-            break;
-
-        case 8:
-            p->count();
-            break;
-
-        case 9:
-            divisionA.concatenate(divisionB);
-            cout << "Divisions Concatenated." << endl;
-            break;
-
-        case 10:
-            cout << "Exiting...";
-            break;
-
-        default:
-            cout << "Invalid Choice.";
+            case 1:
+                cout << "Enter PRN and Name: ";
+                cin >> p >> n;
+                if (division == 1)
+                    first.addFirst(p, n);
+                else if (division == 2)
+                    second.addFirst(p, n);
+                else
+                    cout << "Invalid division.";
+                break;
+            case 2:
+                cout << "Enter PRN and Name: ";
+                cin >> p >> n;
+                if (division == 1)
+                    first.addLast(p, n);
+                else if (division == 2)
+                    second.addLast(p, n);
+                else
+                    cout << "Invalid division.";
+                break;
+            case 3:
+                cout << "Enter existing PRN: ";
+                cin >> key;
+                cout << "Enter new PRN and Name: ";
+                cin >> p >> n;
+                if (division == 1)
+                    first.addAfter(key, p, n);
+                else if (division == 2)
+                    second.addAfter(key, p, n);
+                else
+                    cout << "Invalid division.";
+                break;
+            case 4:
+                if (division == 1)
+                    first.removeFirst();
+                else if (division == 2)
+                    second.removeFirst();
+                else
+                    cout << "Invalid division.";
+                break;
+            case 5:
+                if (division == 1)
+                    first.removeLast();
+                else if (division == 2)
+                    second.removeLast();
+                else
+                    cout << "Invalid division.";
+                break;
+            case 6:
+                cout << "Enter PRN: ";
+                cin >> key;
+                if (division == 1)
+                    first.removeMember(key);
+                else if (division == 2)
+                    second.removeMember(key);
+                else
+                    cout << "Invalid division.";
+                break;
+            case 7:
+                if (division == 1)
+                    first.showMembers();
+                else if (division == 2)
+                    second.showMembers();
+                else
+                    cout << "Invalid division.";
+                break;
+            case 8:
+                if (division == 1)
+                    cout << "Total: " << first.totalMembers();
+                else if (division == 2)
+                    cout << "Total: " << second.totalMembers();
+                else
+                    cout << "Invalid division.";
+                break;
+            case 9:
+                first.joinLists(second);
+                break;
+            case 10:
+                cout << "Program terminated.";
+                break;
+            default:
+                cout << "Invalid choice.";
         }
-
     } while (choice != 10);
-
     return 0;
 }
