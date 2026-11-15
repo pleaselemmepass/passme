@@ -1,98 +1,91 @@
-﻿#include <iostream>
+#include <iostream>
 #include <string>
 using namespace std;
-
 class Stack
 {
-    char s[100];
+    char a[100];
     int top;
-
 public:
-    Stack();
-
-    bool isFull();
-    bool isEmpty();
-    void push(char ch);
-    char pop();
-
-    bool check(string str);
-};
-
-Stack::Stack()
-{
-    top = -1;
-}
-
-bool Stack::isFull()
-{
-    return top == 99;
-}
-
-bool Stack::isEmpty()
-{
-    return top == -1;
-}
-
-void Stack::push(char ch)
-{
-    if (!isFull())
-        s[++top] = ch;
-}
-
-char Stack::pop()
-{
-    if (!isEmpty())
-        return s[top--];
-
-    return '\0';
-}
-
-bool Stack::check(string str)
-{
-    top = -1;
-
-    char ch, x;
-
-    for (int i = 0; i < str.length(); i++)
+    Stack()
     {
-        ch = str[i];
-
-        if (ch == '(' || ch == '{' || ch == '[')
+        top = -1;
+    }
+    bool isEmpty()
+    {
+        if (top == -1)
+            return true;
+        else
+            return false;
+    }
+    bool isFull()
+    {
+        if (top == 99)
+            return true;
+        else
+            return false;
+    }
+    void push(char x)
+    {
+        if (isFull())
+            cout << "Stack is Full";
+        else
         {
-            if (isFull())
-                return false;
-
-            push(ch);
-        }
-        else if (ch == ')' || ch == '}' || ch == ']')
-        {
-            if (isEmpty())
-                return false;
-
-            x = pop();
-
-            if (!((ch == ')' && x == '(') ||
-                  (ch == '}' && x == '{') ||
-                  (ch == ']' && x == '[')))
-                return false;
+            top++;
+            a[top] = x;
         }
     }
-
-    return isEmpty();
-}
-
+    char pop()
+    {
+        if (isEmpty())
+            return '\0';
+        else
+        {
+            char x = a[top];
+            top--;
+            return x;
+        }
+    }
+    void check(string str)
+    {
+        char x;
+        bool valid = true;
+        for (int i = 0; i < str.length(); i++)
+        {
+            if (str[i] == '(' || str[i] == '{' || str[i] == '[')
+            {
+                push(str[i]);
+            }
+            else if (str[i] == ')' || str[i] == '}' || str[i] == ']')
+            {
+                if (isEmpty())
+                {
+                    valid = false;
+                    break;
+                }
+                x = pop();
+                if ((str[i] == ')' && x != '(') ||
+                    (str[i] == '}' && x != '{') ||
+                    (str[i] == ']' && x != '['))
+                {
+                    valid = false;
+                    break;
+                }
+            }
+        }
+        if (!isEmpty())
+            valid = false;
+        if (valid)
+            cout << "Expression is Well Parenthesized";
+        else
+            cout << "Expression is Not Well Parenthesized";
+    }
+};
 int main()
 {
-    Stack st;
+    Stack s;
     string str;
-
-    cout << "Enter an expression: ";
-    getline(cin, str);
-
-    if (st.check(str))
-        cout << "Expression is Well Parenthesized.";
-    else
-        cout << "Expression is Not Well Parenthesized.";
-
+    cout << "Enter expression: ";
+    cin >> str;
+    s.check(str);
     return 0;
 }
