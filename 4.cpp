@@ -1,3 +1,4 @@
+
 #include <iostream>
 using namespace std;
 class Student
@@ -28,6 +29,7 @@ void Student::display()
 }
 void Student::selectionSort()
 {
+    cout << "\nSelection Sort:\n";
     for (int i = 0; i < n - 1; i++)
     {
         int small = i;
@@ -39,12 +41,16 @@ void Student::selectionSort()
         temp = marks[i];
         marks[i] = marks[small];
         marks[small] = temp;
+
+        cout << "Pass " << i + 1 << ": ";
+        for (int k = 0; k < n; k++)
+            cout << marks[k] << " ";
+        cout << endl;
     }
-    cout << "Selection Sort: ";
-    display();
 }
 void Student::bubbleSort()
 {
+    cout << "\nBubble Sort:\n";
     for (int i = 0; i < n - 1; i++)
     {
         for (int j = 0; j < n - i - 1; j++)
@@ -56,13 +62,16 @@ void Student::bubbleSort()
                 marks[j + 1] = temp;
             }
         }
+
+        cout << "Pass " << i + 1 << ": ";
+        for (int k = 0; k < n; k++)
+            cout << marks[k] << " ";
+        cout << endl;
     }
-    cout << "Bubble Sort: ";
-    display();
 }
 void Student::topFive()
 {
-    cout << "Top five scores: ";
+    cout << "\nTop five scores: ";
     for (int i = n - 1; i >= 0 && i >= n - 5; i--)
         cout << marks[i] << " ";
     cout << endl;
