@@ -1,131 +1,100 @@
-﻿#include <iostream>
+#include <iostream>
 using namespace std;
-
-class search
+class Student
 {
-    int roll[100], sorted[100], n;
-
+    int roll[20], n, searchRoll;
 public:
     void create();
     void display();
-    void sort();
-    void linear(int key);
-    void binary(int key);
+    void linearSearch();
+    void binarySearch();
 };
-
-void search::create()
+void Student::create()
 {
-    cout << "How many students attended the program: ";
+    cout << "Enter number of students: ";
     cin >> n;
-
-    cout << "Enter the roll numbers of students: ";
-
+    cout << "Enter roll numbers: ";
     for (int i = 0; i < n; i++)
-    {
         cin >> roll[i];
-        sorted[i] = roll[i];
-    }
 }
-
-void search::display()
+void Student::display()
 {
-    cout << "\nRoll numbers of students: ";
-
+    cout << "Roll numbers: ";
     for (int i = 0; i < n; i++)
         cout << roll[i] << " ";
-
     cout << endl;
 }
-
-void search::sort()
+void Student::linearSearch()
 {
-    int temp;
-
-    cout << "\nSorting using Bubble Sort:\n";
-
-    for (int i = 0; i < n - 1; i++)
-    {
-        for (int j = 0; j < n - i - 1; j++)
-        {
-            if (sorted[j] > sorted[j + 1])
-            {
-                temp = sorted[j];
-                sorted[j] = sorted[j + 1];
-                sorted[j + 1] = temp;
-            }
-        }
-
-        cout << "Pass " << i + 1 << ": ";
-
-        for (int k = 0; k < n; k++)
-            cout << sorted[k] << " ";
-
-        cout << endl;
-    }
-}
-
-void search::linear(int key)
-{
-    int count = 0;
-
+    int comparisons = 0;
+    bool found = false;
+    cout << "Enter roll number to search: ";
+    cin >> searchRoll;
     for (int i = 0; i < n; i++)
     {
-        count++;
-
-        if (roll[i] == key)
+        comparisons++;
+        if (roll[i] == searchRoll)
         {
-            cout << "\nStudent found using Linear Search.";
-            cout << "\nPosition: " << i;
-            cout << "\nComparisons: " << count << endl;
-            return;
+            found = true;
+            break;
         }
     }
-
-    cout << "\nStudent not found using Linear Search.";
-    cout << "\nComparisons: " << count << endl;
+    if (found)
+        cout << "Student found" << endl;
+    else
+        cout << "Student not found" << endl;
+    cout << "Number of comparisons: "
+         << comparisons << endl;
 }
-
-void search::binary(int key)
+void Student::binarySearch()
 {
-    int low = 0, high = n - 1;
-    int mid, count = 0;
-
-    while (low <= high)
+    // Sort roll numbers
+    for (int i = 0; i < n - 1; i++)
     {
-        mid = (low + high) / 2;
-        count++;
-
-        if (sorted[mid] == key)
+        for (int j = i + 1; j < n; j++)
         {
-            cout << "\nStudent found using Binary Search.";
-            cout << "\nPosition in sorted array: " << mid;
-            cout << "\nComparisons: " << count << endl;
-            return;
+            if (roll[i] > roll[j])
+            {
+                int temp = roll[i];
+                roll[i] = roll[j];
+                roll[j] = temp;
+            }
         }
-        else if (key < sorted[mid])
-            high = mid - 1;
-        else
-            low = mid + 1;
     }
-
-    cout << "\nStudent not found using Binary Search.";
-    cout << "\nComparisons: " << count << endl;
+    int first = 0, last = n - 1, middle;
+    int comparisons = 0;
+    bool found = false;
+    cout << "Enter roll number to search: ";
+    cin >> searchRoll;
+    while (first <= last)
+    {
+        middle = (first + last) / 2;
+        comparisons++;
+        if (roll[middle] == searchRoll)
+        {
+            found = true;
+            break;
+        }
+        else if (searchRoll < roll[middle])
+            last = middle - 1;
+        else
+            first = middle + 1;
+    }
+    if (found)
+        cout << "Student found" << endl;
+    else
+        cout << "Student not found" << endl;
+    cout << "Number of comparisons: "
+         << comparisons << endl;
 }
-
 int main()
 {
-    search s;
-    int key;
-
+    Student s;
     s.create();
     s.display();
-    s.sort();
-
-    cout << "\nEnter the roll number to search: ";
-    cin >> key;
-
-    s.linear(key);
-    s.binary(key);
-
+    cout << "\n--- Linear Search ---\n";
+    s.linearSearch();
+    cout << "\n--- Binary Search ---\n";
+    s.binarySearch();
     return 0;
 }
